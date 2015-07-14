@@ -1,43 +1,43 @@
 server {
   listen 80;
-  server_name www.domain.com;
-  return 301 $scheme://domain.com$request_uri;
+  server_name www.vipkabel.com;
+  return 301 $scheme://vipkabel.com$request_uri;
 }
 
 server {
   listen 80; # listen for ipv4; this line is default and implied
-  listen 443 ssl;
-  server_name domain.com;
+  #listen 443 ssl;
+  server_name vipkabel.com;
 
   # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-  ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
-  ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
+  #ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
+  #ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
   
   # Allow multiple connections to use the same key data
-  ssl_session_timeout 5m;
-  ssl_session_cache shared:SSL:50m;
+  #ssl_session_timeout 5m;
+  #ssl_session_cache shared:SSL:50m;
   
   # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
-  ssl_dhparam /etc/ssl/certs/dhparam.pem;
+  #ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
   # Intermediate configuration. tweak to your needs
-  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-  include snippets/ssl_ciphers_intermediate.conf;
-  ssl_prefer_server_ciphers on;
+  #ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  #include snippets/ssl_ciphers_intermediate.conf;
+  #ssl_prefer_server_ciphers on;
 
   # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
   #add_header Strict-Transport-Security max-age=15768000;
 
   # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them
-  ssl_stapling on;
-  ssl_stapling_verify on;
+  #ssl_stapling on;
+  #ssl_stapling_verify on;
 
   # Verify chain of trust of OCSP response using Root CA and Intermediate certs
-  ssl_trusted_certificate /srv/www/domain.com/ssl/unified-ssl.crt;
+  #ssl_trusted_certificate /srv/www/domain.com/ssl/unified-ssl.crt;
   resolver 8.8.8.8 8.8.4.4;
   resolver_timeout 10s;
   
-  root /srv/www/domain.com/htdocs;
+  root /home/apps/php/vipkabel.com/www;
   index index.php index.html index.htm;
   charset UTF-8;
   autoindex off;
@@ -49,8 +49,8 @@ server {
 
   # It's always good to set logs, note however you cannot turn off the error log
   # Setting error_log off; will simply create a file called 'off'
-  access_log /var/log/nginx/domain.com.access.log;
-  error_log /var/log/nginx/domain.com.error.log;
+  access_log /var/log/nginx/vipkabel-com.access.log;
+  error_log /var/log/nginx/vipkabel-com.error.log;
 
   # Vqmod settings
   # Add trailing slash to */vqmod/install requests.
@@ -62,7 +62,7 @@ server {
   }
   
   # Nginx configuration of vqmod htaccess
-  location /srv/www/oc-demo.tk/htdocs/vqmod/ {
+  location /home/apps/php/vipkabel.com/www/vqmod/ {
     location ~ \.(xml|cache) {
       deny all;
     }
@@ -172,7 +172,7 @@ server {
     set $path_info $fastcgi_path_info;
     fastcgi_param PATH_INFO $path_info;
 
-    fastcgi_pass unix:/var/run/domain.com.sock;
+    fastcgi_pass unix:/var/run/php5.sock;
     fastcgi_index index.php;
     # Uncomment if site is HTTPS
     #fastcgi_param HTTPS on;
@@ -180,26 +180,26 @@ server {
   }
 
   # Use this block if PHPMyAdmin is enabled for domain.com
-  location /phpmyadmin {
-    root /usr/share/;
-    index index.php index.html index.htm;
-
-    location ~ ^/phpmyadmin/(.+\.php)$ {
-      try_files $uri =404;
-      root /usr/share/;
-      fastcgi_pass unix:/var/run/domain.com.sock;
-      fastcgi_index index.php;
-      include fastcgi.conf;
-    }
-
-    location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
-      root /usr/share/;
-    }
-  }
-
-  location /phpMyAdmin {
-    rewrite ^/* /phpmyadmin last;
-  }
-  # End PHPMyAdmin block
+  #location /phpmyadmin {
+  #  root /usr/share/;
+  #  index index.php index.html index.htm;
+#
+#    location ~ ^/phpmyadmin/(.+\.php)$ {
+#      try_files $uri =404;
+#      root /usr/share/;
+#      fastcgi_pass unix:/var/run/domain.com.sock;
+#      fastcgi_index index.php;
+#      include fastcgi.conf;
+#    }
+#
+#    location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+#      root /usr/share/;
+#    }
+#  }
+#
+#  location /phpMyAdmin {
+#    rewrite ^/* /phpmyadmin last;
+#  }
+#  # End PHPMyAdmin block
 
 } # End of server block.
